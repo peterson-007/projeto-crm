@@ -10,4 +10,5 @@ public interface ClienteService {
     Cliente buscarClientePorId(int id) throws SQLException;
     void listarClientesCadastrados() throws SQLException;
     void deletarCliente() throws SQLException;
+    void atualizarCliente() throws SQLException;
 }

@@ -1,21 +1,32 @@
 package service;
 
+import domain.Cliente;
 import domain.Entrega;
 import domain.Pedido;
 import org.w3c.dom.ls.LSOutput;
+import repository.ClienteRepository;
 import repository.EntregaRepository;
 import repository.PedidoRepository;
 
 import java.sql.SQLException;
+import java.sql.SQLOutput;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
-public class EntregaServiceImpl {
+public class EntregaServiceImpl implements EntregaService {
 
     private EntregaRepository entregaRepository;
     private PedidoRepository pedidoRepository;
+    private ClienteRepository clienteRepository;
+
+
+    public EntregaServiceImpl(EntregaRepository entregaRepository, ClienteRepository clienteRepository) {
+        this.entregaRepository = entregaRepository;
+        this.clienteRepository = clienteRepository;
+    }
 
     Scanner sc = new Scanner(System.in);
-
 
     public void cadastrarEntrega() throws SQLException {
 
@@ -37,6 +48,29 @@ public class EntregaServiceImpl {
             System.out.println("Falha no cadastro da entrega!");
         }
 
+    }
+
+    public void entregasConcluidas() throws SQLException {
+
+        List<Entrega> entregasConcluidas;
+
+        entregasConcluidas = entregaRepository.findEntregasConcluidas();
+
+        System.out.println("ENTREGAS CONCLUÍDAS: ");
+
+        for(Entrega entrega : entregasConcluidas){
+
+            Cliente cliente = new Cliente();
+            cliente = clienteRepository.findById(entrega.getIdPedido());
+
+            System.out.println("Nome do cliente: "+ cliente.getNome());
+            System.out.println("Entregador: "+entrega.getEntregador());
+            System.out.println("Recebedor: "+entrega.getRecebedor());
+            System.out.println("Tentativas de entrega: "+entrega.getQtTentativasEntrega());
+            System.out.println("Data da entrega: "+entrega.getDataEntrega());
+            System.out.println("Status: "+entrega.getStatus());
+            System.out.println("\n");
+        }
     }
 
     /*public void efetuarEntrega(Entrega entrega) throws SQLException {

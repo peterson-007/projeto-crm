@@ -56,6 +56,7 @@ public class ProdutoRepository {
         // Percorrer o ResultSet e pegar os resultados
         while (resultSet.next()) {
             Produto produto = new Produto();
+            produto.setId(resultSet.getInt("id"));
             produto.setNome(resultSet.getString("nome"));
             produto.setPreco(resultSet.getDouble("preco"));
 

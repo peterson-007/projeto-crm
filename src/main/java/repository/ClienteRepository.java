@@ -62,35 +62,6 @@ public class ClienteRepository {
             cliente.setDataDeNascimento(resultSet.getString("data_nascimento"));
             cliente.setIdadeAtual(resultSet.getInt("idade_atual"));
             cliente.setGenero(resultSet.getString("genero"));
-
-            // Recuperando os dados do Contato
-            String telefone = resultSet.getString("telefone");
-            String email = resultSet.getString("email");
-            // Cria um objeto de contato e associa ao cliente
-            Contato contato = new Contato();
-            contato.setTelefone(telefone);
-            contato.setEmail(email);
-            // Adiciona o objeto de contato à lista de contatos do cliente
-            cliente.addContato(contato);
-
-            // Recuperando os dados do Endereço
-            String rua = resultSet.getString("rua");
-            String numero = resultSet.getString("numero");
-            String complemento = resultSet.getString("complemento");
-            String bairro = resultSet.getString("bairro");
-            String cidade = resultSet.getString("cidade");
-            String cep = resultSet.getString("cep");
-            //Cria um objeto Endereco e associa ao cliente
-            Endereco endereco = new Endereco();
-            endereco.setRua(rua);
-            endereco.setNumero(numero);
-            endereco.setComplemento(complemento);
-            endereco.setBairro(bairro);
-            endereco.setCidade(cidade);
-            endereco.setCep(cep);
-            // Adiciona o objeto de endereco à lista de enderecos do cliente
-            cliente.addEndereco(endereco);
-
         }
         //caso exista, retorna a instância
         //caso não exista, retorna null
@@ -174,7 +145,7 @@ public class ClienteRepository {
 
             return true; // Se chegou até aqui sem lançar exceção, a inserção foi bem-sucedida
         } catch (SQLException e) {
-            // Trate a exceção de alguma forma (log, relance, etc.)
+            // Tratar a exceção de alguma forma
             throw e;
         }
 
@@ -198,53 +169,34 @@ public class ClienteRepository {
         return false; // Retorna false se ocorrer algum erro ou não encontrar cliente com o mesmo CPF
     }
 
-    public boolean verificarEmail(String email) throws SQLException {
-        String query = "SELECT COUNT(*) FROM Contato WHERE email = ?";
-        PreparedStatement preparedStatement = this.connection
-                .getConnection()
-                .prepareStatement(query);
-        preparedStatement.setString(1, email);
-
-        try (ResultSet resultSet = preparedStatement.executeQuery()) {
-            if (resultSet.next()) {
-                int count = resultSet.getInt(1);
-                return count > 0; // Retorna true se encontrou algum cliente com o mesmo email
-            }
-        }
-        return false; // Retorna false se ocorrer algum erro ou não encontrar cliente com o mesmo email
-    }
-
-
-    public boolean update(Cliente cliente) throws SQLException{
+    public boolean update(Cliente cliente) throws SQLException {
         boolean updated = false;
 
-        //client null ou id = 0 , retorna false
-        if(cliente == null || cliente.getId() <= 0 ){
+        // Cliente nulo ou id <= 0, retorna false
+        if (cliente == null || cliente.getId() <= 0) {
             return false;
         }
 
-        //tomar cuidado com os espaços
-        String updateSql = "UPDATE Cliente "+
-                "SET nome = ?,"+
-                "cpf = ?,"+
-                "data_nascimento = ?,"+
-                "idade_atual = ?,"+
-                "genero = ? "+
+        // Cuidado com os espaços na query
+        String updateSql = "UPDATE Cliente " +
+                "SET nome = ?," +
+                "data_nascimento = ?," +
+                "idade_atual = ? " + // Adicione um espaço após a vírgula
                 "WHERE id = ?";
 
-        PreparedStatement preparedStatement = this.connection
+        try (PreparedStatement preparedStatement = this.connection
                 .getConnection()
-                .prepareStatement(updateSql);
+                .prepareStatement(updateSql)) {
 
-        preparedStatement.setString(1, cliente.getNome());
-        preparedStatement.setString(2, cliente.getCpf());
-        preparedStatement.setString(3, cliente.getDataDeNascimento());
-        preparedStatement.setInt(4, cliente.getIdadeAtual());
-        // Configurar o atributo genero como uma string
-        preparedStatement.setString(5, String.valueOf(cliente.getGenero()));
-        preparedStatement.setInt(6, cliente.getId());
+            preparedStatement.setString(1, cliente.getNome());
+            preparedStatement.setString(2, cliente.getDataDeNascimento());
+            preparedStatement.setInt(3, cliente.getIdadeAtual());
+            preparedStatement.setInt(4, cliente.getId());
 
-        updated = preparedStatement.execute();
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            updated = rowsAffected > 0;
+        }
 
         return updated;
     }

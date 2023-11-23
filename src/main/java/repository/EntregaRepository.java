@@ -3,6 +3,8 @@ package repository;
 import domain.Entrega;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EntregaRepository {
 
@@ -21,7 +23,7 @@ public class EntregaRepository {
                 .getConnection()
                 .prepareStatement(insertSql);
 
-        preparedStatement.setInt(1, entrega.getPedido().getId());
+        preparedStatement.setInt(1, entrega.getIdPedido());//id_pedido
         preparedStatement.setString(2, entrega.getEntregador());
         // Fornecendo explicitamente o tipo SQL para o ENUM
         preparedStatement.setObject(3, entrega.getStatus(), java.sql.Types.OTHER);
@@ -101,12 +103,40 @@ public class EntregaRepository {
                     entrega.setQtTentativasEntrega(resultSet.getInt("qt_tentativas_entrega"));
                     entrega.setDataEntrega(resultSet.getString("data_entrega"));
                     entrega.setStatus(Entrega.StatusEntrega.valueOf(resultSet.getString("status_entrega")));
-
+                    entrega.setIdPedido(resultSet.getInt("id_pedido"));
                 }
             }
         }
 
         return entrega;
     }
+
+    public List<Entrega> findEntregasConcluidas() throws SQLException {
+        List<Entrega> entregasConcluidas = new ArrayList<>();
+
+        String sql = "SELECT * FROM Entrega WHERE status_entrega = 'ENTREGUE'";
+
+        try (PreparedStatement preparedStatement = this.connection
+                .getConnection()
+                .prepareStatement(sql)) {
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+
+                while (resultSet.next()) {
+                    Entrega entrega = new Entrega();
+                    entrega.setIdPedido(resultSet.getInt("id"));
+                    entrega.setEntregador(resultSet.getString("entregador"));
+                    entrega.setRecebedor(resultSet.getString("recebedor"));
+                    entrega.setQtTentativasEntrega(resultSet.getInt("qt_tentativas_entrega"));
+                    entrega.setDataEntrega(resultSet.getString("data_entrega"));
+                    entrega.setStatus(Entrega.StatusEntrega.valueOf(resultSet.getString("status_entrega")));
+                    entrega.setIdPedido(resultSet.getInt("id_pedido"));
+
+                    entregasConcluidas.add(entrega);
+                }
+            }
+        }
+        return entregasConcluidas;
+
+        }
 
 }

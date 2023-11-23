@@ -23,7 +23,7 @@ public class EnderecoRepository {
                 .getConnection()
                 .prepareStatement(insertSql);
 
-        preparedStatement.setInt(1, endereco.getCliente().getId());// precisa do id do CLIENTE
+        preparedStatement.setInt(1, endereco.getIdClient());// precisa do id do CLIENTE
         preparedStatement.setString(2, endereco.getRua());
         preparedStatement.setString(3, endereco.getNumero());
         preparedStatement.setString(4, endereco.getComplemento());

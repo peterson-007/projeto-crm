@@ -7,7 +7,6 @@ public class Produto {
     private int id;
     private String nome;
     private double preco;
-    private List<Pedido> pedidos;
 
     public int getId() {
         return id;
@@ -31,13 +30,5 @@ public class Produto {
 
     public void setPreco(double preco) {
         this.preco = preco;
-    }
-
-    public List<Pedido> getPedidos() {
-        return pedidos;
-    }
-
-    public void setPedidos(List<Pedido> pedidos) {
-        this.pedidos = pedidos;
     }
 }

@@ -8,35 +8,72 @@ import repository.ContatoRepository;
 import repository.EnderecoRepository;
 
 import java.sql.SQLException;
+import java.sql.SQLOutput;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class ClienteServiceImpl implements ClienteService{
 
-    //Injetando VARIAVEIS
+    // Injetando VARIÁVEIS
     private ClienteRepository clienteRepository;
     private ContatoRepository contatoRepository;
     private EnderecoRepository enderecoRepository;
 
-    // Injetando CONSTRUTORES
+    private ContatoService contatoService;
+    private EnderecoService enderecoService;
+
+    // Injetando CONSTRUTOR
     public ClienteServiceImpl(ClienteRepository clienteRepository, ContatoRepository contatoRepository, EnderecoRepository enderecoRepository) {
         this.clienteRepository = clienteRepository;
         this.contatoRepository = contatoRepository;
         this.enderecoRepository = enderecoRepository;
+
+        // Criação das instâncias de ContatoServiceImpl e EnderecoServiceImpl após a inicialização dos repositórios
+        this.contatoService = new ContatoServiceImpl(clienteRepository, contatoRepository);
+        this.enderecoService = new EnderecoServiceImpl(clienteRepository, enderecoRepository);
+
     }
 
     Scanner sc = new Scanner(System.in);
 
-    public void cadastrarCliente() throws SQLException {
-        // Lógica para cadastrar o cliente
 
+    public void cadastrarCliente() {
+
+        try {
+        // Lógica para cadastrar o cliente
+        Cliente cliente = obterDetalhesCliente();
+
+        boolean clienteCadastrado = clienteRepository.insertCliente(cliente);
+
+        //puxar cliente pelo CPF para obter ID gerado pelo banco
+        cliente = clienteRepository.findByCpf(cliente.getCpf());
+
+        //Cadastrar CONTATO do cliente
+        boolean contatoCadastrado = contatoService.cadastrarContato(cliente.getId());
+
+        //Cadastrar ENDERECO do cliente
+        boolean enderecoCadastrado = enderecoService.cadastrarEndereco(cliente.getId());
+
+       if (clienteCadastrado && contatoCadastrado && enderecoCadastrado){
+           System.out.println("Cliente cadastrado com sucesso!");
+       } else {
+           System.out.println("Falha no cadastro!");
+       }
+
+        } catch (SQLException e) {
+            e.printStackTrace(); // Ou tratamento apropriado
+        }
+    }
+
+    private Cliente obterDetalhesCliente() throws SQLException {
         Cliente cliente = new Cliente();
 
         System.out.println("Digite o nome do cliente:");
         String nome = sc.nextLine();
         cliente.setNome(nome);
 
-        //cadastro e validação do CPF
+        // Cadastro e validação do CPF
         boolean cpfValidado = false;
         while (!cpfValidado) {
             System.out.println("Digite o cpf do cliente:");
@@ -59,66 +96,7 @@ public class ClienteServiceImpl implements ClienteService{
         String genero = String.valueOf(sc.next().charAt(0));
         cliente.setGenero(genero);
 
-        boolean clienteCadastrado = clienteRepository.insertCliente(cliente);
-
-        //Cadastrar CONTATO do cliente
-        Contato contato = new Contato();
-        //Associa a instância atual do cliente com o contato
-        //Precisa bucar o cliente no banco para obter o ID gerado
-        cliente = clienteRepository.findByCpf(cliente.getCpf());
-        contato.setCliente(cliente);
-
-        //cadastro e validação do EMAIL
-        boolean emailValidado = false;
-        sc.nextLine(); // Consumir o caractere de nova linha pendente(Passando direto pelo sc.nextLine())
-        while (!emailValidado) {
-            System.out.println("Digite o email do cliente:");
-            String email = sc.nextLine();
-            if (clienteRepository.verificarEmail(email)) {
-                System.out.println("Já existe um cliente com o mesmo EMAIL.\nDigite novamente:");
-            } else {
-                contato.setEmail(email);
-                emailValidado = true;
-            }
-        }
-
-        System.out.println("Digite o telefone do cliente");
-        String telefone = sc.nextLine();
-        contato.setTelefone(telefone);
-        cliente.addContato(contato);//DÚVIDA quanto à necessidade de usar esse método !_!_!_!_!_!_!
-        boolean contatoCadastrado = contatoRepository.insertContato(contato);
-
-        //Cadastrar ENDERECO do cliente
-        Endereco endereco = new Endereco();
-        //Associa a instância atual do cliente com o endereco
-        endereco.setCliente(cliente);
-        System.out.println("CADASTRO DO ENDEREÇO\n Digite a rua:");
-        String rua = sc.nextLine();
-        endereco.setRua(rua);
-        System.out.println("Digite o número da residência: ");
-        String numero = sc.nextLine();
-        endereco.setNumero(numero);
-        System.out.println("Digite o complemento: ");
-        String complemento = sc.nextLine();
-        endereco.setComplemento(complemento);
-        System.out.println("Digite o bairro: ");
-        String bairro = sc.nextLine();
-        endereco.setBairro(bairro);
-        System.out.println("Digite a cidade: ");
-        String cidade = sc.nextLine();
-        endereco.setCidade(cidade);
-        System.out.println("Digite o CEP: ");
-        String cep = sc.nextLine();
-        endereco.setCep(cep);
-        cliente.addEndereco(endereco);//DÚVIDA quanto à necessidade de usar esse método !_!_!_!_!_!_!
-        boolean enderecoCadastrado = enderecoRepository.insertEndereco(endereco);
-
-       if (clienteCadastrado && contatoCadastrado && enderecoCadastrado){
-           System.out.println("Cliente cadastrado com sucesso!");
-       } else {
-           System.out.println("Falha no cadastro!");
-       }
-
+        return cliente;
     }
 
     @Override
@@ -144,13 +122,11 @@ public class ClienteServiceImpl implements ClienteService{
 
             /*
             Contato contato = contatoRepository.findByIdCliente(cliente.getId());
-            cliente.addContato(contato);// -!_!_!_!_!
             System.out.println("CONTATO:" +
                     "\nEmail: "+contato.getEmail()+
                     "\nTelefone: "+contato.getTelefone());
 
             Endereco endereco = enderecoRepository.findByIdCliente(cliente.getId());
-            cliente.addEndereco(endereco);//!_!_!_!_!_!
             System.out.println("ENDEREÇO: "+
                     "\nRua: "+endereco.getRua()+
                     "\nNúmero: "+endereco.getNumero()+
@@ -158,6 +134,65 @@ public class ClienteServiceImpl implements ClienteService{
                     "\nBairro: "+endereco.getBairro()+
                     "\nCidade: "+endereco.getCidade()+
                     "\nCEP: "+endereco.getCep()); */
+        }
+    }
+
+    public void atualizarCliente() throws SQLException{
+
+        System.out.println("ATUALIZAR DADOS DO CLIENTE");
+        listarClientesCadastrados();
+
+        System.out.println("\nDigite o CPF do cliente que deseja atualizar os dados: ");
+        String cpf = sc.nextLine();
+        Cliente cliente = clienteRepository.findByCpf(cpf);
+
+        System.out.println("Digite o nome: ");
+        String nome = sc.nextLine();
+        cliente.setNome(nome);
+
+        System.out.println("Digite a data de nascimento: ");
+        String dataNascimento = sc.nextLine();
+        cliente.setDataDeNascimento(dataNascimento);
+
+        System.out.println("Digite a idade atual: ");
+        int idadeAtual = sc.nextInt();
+        cliente.setIdadeAtual(idadeAtual);
+
+        boolean clienteAtualizado = clienteRepository.update(cliente);
+
+        if (clienteAtualizado){
+            System.out.println("Cadastro atualizado");
+        } else{
+            System.out.println("Falha na atualização do cadastro");
+        }
+
+        // Adicionar Contato
+        adicionarContato(cliente);
+
+        //Adicionar Endereco
+        adicionarEndereco(cliente);
+
+    }
+
+    private void adicionarContato(Cliente cliente) throws SQLException {
+
+        System.out.println("Deseja adicionar contatos ao cliente? (s/n): ");
+        char adicionarContato = sc.next().charAt(0);
+        sc.nextLine(); // Consumir a quebra de linha após a leitura do char
+
+        if (adicionarContato == 's') {
+            contatoService.adicionarContatosAoCliente(cliente);
+        }
+    }
+
+    private void adicionarEndereco(Cliente cliente) throws SQLException {
+
+        System.out.println("Deseja adicionar endereços ao cliente? (s/n):");
+        char adicionarEndereco = sc.next().charAt(0);
+        sc.nextLine(); // Consumir a quebra de linha após a leitura do char
+
+        if (adicionarEndereco == 's') {
+            enderecoService.adicionarEnderecosAoCliente(cliente);
         }
     }
 

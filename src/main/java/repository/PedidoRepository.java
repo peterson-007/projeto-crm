@@ -2,6 +2,7 @@ package repository;
 
 import domain.Entrega;
 import domain.Pedido;
+import domain.Produto;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,8 +19,7 @@ public class PedidoRepository {
         this.connection = DataBaseConnection.getInstance();
     }
 
-    public boolean insertPedido(Pedido pedido) throws SQLException {
-        boolean inserted = false;
+    public int insertPedido(Pedido pedido) throws SQLException {
 
         String insertSql = "INSERT INTO Pedido (id_cliente, datahora_criacao, valor_pedido, status_pedido)"+
                 " VALUES (?,?,?,?)";
@@ -31,15 +31,42 @@ public class PedidoRepository {
         // Convertendo a String para java.sql.Timestamp
         Timestamp timestampDataCriacao = Timestamp.valueOf(pedido.getDatahoraCriacao());
 
-        preparedStatement.setInt(1, pedido.getCliente().getId());// precisa do id do CLIENTE
+        preparedStatement.setInt(1, pedido.getIdCliente());// precisa do id do CLIENTE
         preparedStatement.setTimestamp(2, timestampDataCriacao);
         preparedStatement.setDouble(3, pedido.getValorPedido());
         // Fornecendo explicitamente o tipo SQL para o ENUM
         preparedStatement.setObject(4, pedido.getStatus(), java.sql.Types.OTHER);
-        inserted = preparedStatement.execute();
+        preparedStatement.execute();
 
-        return  inserted;
+        /*try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
+            if (generatedKeys.next()) {
+                // Obtém o valor da coluna autoincrementável chamada "id"
+                pedidoId = generatedKeys.getInt("id");
+            } else {
+                throw new SQLException("A inserção do pedido falhou, nenhum ID foi retornado.");
+            }
+        }*/
 
+        int pedidoId = findIdPedidoByDataCriacao();
+
+        return pedidoId;
+
+    }
+
+    public void associarProdutosAoPedido(int pedidoId, List<Produto> produtos) throws SQLException {
+        String sql = "INSERT INTO PedidoProduto (pedido_id, produto_id) VALUES (?, ?)";
+
+        try (PreparedStatement preparedStatement = this.connection
+                .getConnection()
+                .prepareStatement(sql)) {
+            for (Produto produto : produtos) {
+                preparedStatement.setInt(1, pedidoId);
+                preparedStatement.setInt(2, produto.getId());
+                preparedStatement.addBatch();
+            }
+
+            preparedStatement.executeBatch();
+        }
     }
 
     public void atualizarStatus(Pedido pedido) throws SQLException{
@@ -73,8 +100,9 @@ public class PedidoRepository {
         preparedStatement.execute();
     }
 
+
     //Retorna o ID do pedido mais recente
-    public Pedido findByDatahoraCriacao() throws SQLException {
+    public int findIdPedidoByDataCriacao() throws SQLException {
         Pedido pedido = null;
 
         String selectSql = "SELECT * FROM Pedido ORDER BY datahora_criacao DESC LIMIT 1";
@@ -89,7 +117,7 @@ public class PedidoRepository {
             }
         }
 
-        return pedido;
+        return pedido.getId();
     }
 
     private Pedido mapResultSetToPedido(ResultSet resultSet) throws SQLException {
@@ -136,6 +164,44 @@ public class PedidoRepository {
 
         return pedidos;
     }
+
+
+    public List<Pedido> findPedidosPendentesByCpf(String cpf) throws SQLException {
+        List<Pedido> pedidos = new ArrayList<>();
+
+        // Consulta SQL para recuperar todos os pedidos de um cliente específico
+        String sql = "SELECT p.*, c.cpf as cliente_cpf " +
+                "FROM Pedido p " +
+                "JOIN Cliente c ON p.id_cliente = c.id " +
+                "WHERE c.cpf = ? AND p.status_pedido != 'FINALIZADO' AND p.status_pedido !='CANCELADO'";
+
+        try (PreparedStatement preparedStatement = this.connection
+                .getConnection()
+                .prepareStatement(sql)) {
+
+            preparedStatement.setString(1, cpf);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    Pedido pedido = new Pedido();
+                    pedido.setId(resultSet.getInt("id"));
+                    pedido.setDatahoraCriacao(resultSet.getString("datahora_criacao"));
+                    pedido.setDatahoraEntrega(resultSet.getString("datahora_entrega"));
+                    pedido.setValorPedido(resultSet.getDouble("valor_pedido"));
+                    // Mapeia o StatusPedido a partir da string no banco de dados
+                    pedido.setStatus(Pedido.StatusPedido.valueOf(resultSet.getString("status_pedido")));
+
+                    // Aqui você também pode recuperar a entrega, produtos e cliente, se necessário, e configurar no objeto Pedido
+
+                    // Adicione o pedido à lista
+                    pedidos.add(pedido);
+                }
+            }
+        }
+
+        return pedidos;
+    }
+
 
     public Pedido findByIdPedido(int idPedido) throws SQLException {
         Pedido pedido = null;

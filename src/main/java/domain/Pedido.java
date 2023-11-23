@@ -10,9 +10,7 @@ public class Pedido {
     private String datahoraEntrega;
     private double valorPedido;
     private StatusPedido status;
-    private Entrega entrega;
-    private List<Produto> produtos;
-    private Cliente cliente;
+    private int idCliente;
 
     // Enum para representar os diferentes estados de um pedido
     public enum StatusPedido {
@@ -63,27 +61,11 @@ public class Pedido {
         this.status = status;
     }
 
-    public Entrega getEntrega() {
-        return entrega;
+    public int getIdCliente() {
+        return idCliente;
     }
 
-    public void setEntrega(Entrega entrega) {
-        this.entrega = entrega;
-    }
-
-    public List<Produto> getProdutos() {
-        return produtos;
-    }
-
-    public void setProdutos(List<Produto> produtos) {
-        this.produtos = produtos;
-    }
-
-    public Cliente getCliente() {
-        return cliente;
-    }
-
-    public void setCliente(Cliente cliente) {
-        this.cliente = cliente;
+    public void setIdCliente(int idCliente) {
+        this.idCliente = idCliente;
     }
 }

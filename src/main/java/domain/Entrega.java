@@ -8,7 +8,7 @@ public class Entrega {
     private int qtTentativasEntrega;
     private String dataEntrega;
     private StatusEntrega status;
-    private Pedido pedido;
+    private int idPedido;
 
     // Enum para representar os diferentes estados de entrega
     public enum StatusEntrega {
@@ -66,11 +66,11 @@ public class Entrega {
         this.status = status;
     }
 
-    public Pedido getPedido() {
-        return pedido;
+    public int getIdPedido() {
+        return idPedido;
     }
 
-    public void setPedido(Pedido pedido) {
-        this.pedido = pedido;
+    public void setIdPedido(int idPedido) {
+        this.idPedido = idPedido;
     }
 }

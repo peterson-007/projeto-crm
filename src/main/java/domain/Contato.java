@@ -5,7 +5,7 @@ public class Contato {
     private int id;
     private String telefone;
     private String email;
-    private Cliente cliente;
+    private int idCliente;
 
     public int getId() {
         return id;
@@ -31,11 +31,11 @@ public class Contato {
         this.email = email;
     }
 
-    public Cliente getCliente() {
-        return cliente;
+    public int getIdCliente() {
+        return idCliente;
     }
 
-    public void setCliente(Cliente cliente) {
-        this.cliente = cliente;
+    public void setIdCliente(int idCliente) {
+        this.idCliente = idCliente;
     }
 }

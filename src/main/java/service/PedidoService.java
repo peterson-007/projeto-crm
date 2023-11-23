@@ -10,7 +10,7 @@ public interface PedidoService {
 
     void cadastrarPedido() throws SQLException;
     Pedido buscarPedidoPorId(int id) throws SQLException;
-    void adicionarProdutos(Pedido pedido) throws SQLException;
-    double calcularValorPedido(Pedido pedido);
+    List<Produto> adicionarProdutos(Pedido pedido) throws SQLException;
+    double calcularValorPedido(List<Produto> produtos);
     void efetuarEntrega() throws SQLException;
 }

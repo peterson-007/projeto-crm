@@ -9,8 +9,7 @@ public class Endereco {
     private String bairro;
     private String cidade;
     private String cep;
-    private Cliente cliente;
-
+    private int idClient;
 
     public int getId() {
         return id;
@@ -68,11 +67,11 @@ public class Endereco {
         this.cep = cep;
     }
 
-    public Cliente getCliente() {
-        return cliente;
+    public int getIdClient() {
+        return idClient;
     }
 
-    public void setCliente(Cliente cliente) {
-        this.cliente = cliente;
+    public void setIdClient(int idClient) {
+        this.idClient = idClient;
     }
 }
