@@ -4,7 +4,7 @@ Desafio de projeto Ultima
           Com base na atividade da semana 4, crie as classes de Repositórios para as tabelas restantes. São elas: Produto, Entrega, Cliente, Pedido, Pedido_produto;
       Utilizando os conceitos de arquitetura limpa (principalmente a camada de serviço), criar as lógicas de negócio para cadastrar um cliente, um pedido, adicionar produtos de pedido e a entrega do produto.
           Considere como regras:
-          ▪ Não pode existir mais de um cliente com o mesmo cpf ou email.
+            ▪ Não pode existir mais de um cliente com o mesmo cpf ou email.
             ▪ Não pode existir mais de um Produto com o mesmo nome.
             ▪ A Entrega deve possuir a data em que o produto foi entregue ao cliente e, se possuir essa data, deve também possuir o nome da pessoa que recebeu.
             ▪ O valor total do pedido deve ser calculado com base no valor individual dos produtos que fazem parte do pedido e a quantidade de cada produto.
