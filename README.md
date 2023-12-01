@@ -1,6 +1,6 @@
 # projeto-crm
 
-## Desafio de projeto Última
+## Desafio de projeto Ultima School
 
 **Desafio:**
 - Com base na atividade da semana 4, crie as classes de Repositórios para as tabelas restantes. São elas: Produto, Entrega, Cliente, Pedido, Pedido_produto.
