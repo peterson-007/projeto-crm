@@ -16,3 +16,6 @@
   - O Status do pedido deve ser atualizado de acordo com o status da entrega.
     - Exemplo: Se a entrega possui estado “Entregue”, o estado do pedido deve ser atualizado para “Finalizado”.
   - A data de criação do pedido deve ser definida.
+
+Cadastrar Cliente:
+![image](Exemplos/salvar_cliente.png)
