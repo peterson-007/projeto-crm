@@ -17,6 +17,42 @@
     - Exemplo: Se a entrega possui estado “Entregue”, o estado do pedido deve ser atualizado para “Finalizado”.
   - A data de criação do pedido deve ser definida.
 
-Cadastrar Cliente:
+CADASTRAR CLIENTE:
 
 ![image](Exemplos/salvar_cliente.png)
+
+CADASTRAR PEDIDO:
+
+![image](Exemplos/cadastrar_pedido.png)
+
+ENTREGAR PEDIDO:
+
+![image](Exemplos/entregar_pedido.png)
+
+VALIDAR CPF E E-MAIL DO CLIENTE:
+
+![image](Exemplos/validacao_email_cpf.png)
+
+VALIDAR NOME DO PRODUTO:
+
+![image](Exemplos/validacao_nome_produto.png)
+
+RECEBEDOR E DATA DA ENTREGA:
+
+![image](Exemplos/data_recebedor_entrega.png)
+
+VALOR TOTAL DO PEDIDO:
+
+![image](Exemplos/valor_total_pedido.png)
+
+DELETE LÓGICO:
+
+![image](Exemplos/delete_logico.png)
+
+STATUS DO PEDIDO E STATUS DA ENTREGA:
+
+![image](Exemplos/status_entrega_pedido.png)
+
+DATA DE CRIAÇÃO DO PEDIDO:
+
+![image](Exemplos/data_criacao_pedido.png)
