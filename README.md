@@ -1,4 +1,4 @@
-# projeto-crm
+# Projeto-CRM-Desktop
 
 ## Desafio de projeto Ultima School
 
@@ -17,7 +17,5 @@
     - Exemplo: Se a entrega possui estado “Entregue”, o estado do pedido deve ser atualizado para “Finalizado”.
   - A data de criação do pedido deve ser definida.
 
-**Dica:** Lembre-se de usar a conversão de nomes para as classes de repositório e serviço.
-- **Serviço:** [EntidadeNome]Service para os serviços, ou seja, se a entidade for Client, o nome da classe de serviço deve ser ClientService.
-- **Repositório:** [EntidadeNome]Repositório para os repositórios, isto é, se a entidade for a Product, o nome da classe de repositório deve ser ProductRepository.
-
+Cadastrar Cliente:
+![image](https://ibb.co/310hQ0Q)
