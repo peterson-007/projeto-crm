@@ -18,4 +18,5 @@
   - A data de criação do pedido deve ser definida.
 
 Cadastrar Cliente:
+
 ![image](Exemplos/salvar_cliente.png)
