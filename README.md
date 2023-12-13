@@ -18,4 +18,4 @@
   - A data de criação do pedido deve ser definida.
 
 Cadastrar Cliente:
-![Salvar Cliente](https://ibb.co/bR8p7Zz)
+![Imagem](https://ibb.co/bR8p7Zz)
