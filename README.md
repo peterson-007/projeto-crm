@@ -18,4 +18,4 @@
   - A data de criação do pedido deve ser definida.
 
 Cadastrar Cliente:
-![Logo do R](http://developer.r-project.org/Logo/Rlogo-5.png)
+![Salvar Cliente](https://ibb.co/bR8p7Zz)
