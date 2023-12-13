@@ -4,10 +4,7 @@ import domain.Entrega;
 import domain.Pedido;
 import domain.Produto;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,30 +21,34 @@ public class PedidoRepository {
         String insertSql = "INSERT INTO Pedido (id_cliente, datahora_criacao, valor_pedido, status_pedido)"+
                 " VALUES (?,?,?,?)";
 
+
         PreparedStatement preparedStatement = this.connection
                 .getConnection()
-                .prepareStatement(insertSql);
+                .prepareStatement(insertSql, Statement.RETURN_GENERATED_KEYS);
 
-        // Convertendo a String para java.sql.Timestamp
-        Timestamp timestampDataCriacao = Timestamp.valueOf(pedido.getDatahoraCriacao());
 
-        preparedStatement.setInt(1, pedido.getIdCliente());// precisa do id do CLIENTE
-        preparedStatement.setTimestamp(2, timestampDataCriacao);
-        preparedStatement.setDouble(3, pedido.getValorPedido());
-        // Fornecendo explicitamente o tipo SQL para o ENUM
-        preparedStatement.setObject(4, pedido.getStatus(), java.sql.Types.OTHER);
-        preparedStatement.execute();
+            // Convertendo a String para java.sql.Timestamp
+            Timestamp timestampDataCriacao = Timestamp.valueOf(pedido.getDatahoraCriacao());
 
-        /*try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
+            preparedStatement.setInt(1, pedido.getIdCliente());// precisa do id do CLIENTE
+            preparedStatement.setTimestamp(2, timestampDataCriacao);
+            preparedStatement.setDouble(3, pedido.getValorPedido());
+            // Fornecendo explicitamente o tipo SQL para o ENUM
+            preparedStatement.setObject(4, pedido.getStatus(), java.sql.Types.OTHER);
+            preparedStatement.execute();
+
+        int pedidoId = 0;
+
+        ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+
             if (generatedKeys.next()) {
                 // Obtém o valor da coluna autoincrementável chamada "id"
-                pedidoId = generatedKeys.getInt("id");
-            } else {
-                throw new SQLException("A inserção do pedido falhou, nenhum ID foi retornado.");
+                pedidoId = generatedKeys.getInt(1);
             }
-        }*/
 
-        int pedidoId = findIdPedidoByDataCriacao();
+        System.out.println("ID gerado: "+pedidoId);
+
+        //int pedidoId = findIdPedidoByDataCriacao();
 
         return pedidoId;
 

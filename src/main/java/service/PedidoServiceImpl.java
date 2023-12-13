@@ -48,7 +48,7 @@ public class PedidoServiceImpl implements PedidoService {
         Cliente cliente = (clienteRepository.findByCpf(cpf));
 
         //CRIAR PEDIDO
-        Pedido pedido = criarPedido(cliente);
+        Pedido pedido = criarPedido();
 
         //Associar pedido ao cliente
         pedido.setIdCliente(cliente.getId());
@@ -74,7 +74,7 @@ public class PedidoServiceImpl implements PedidoService {
         entregaRepository.insertEntrega(entrega);
     }
 
-    private Pedido criarPedido(Cliente cliente) {
+    private Pedido criarPedido() {
         Pedido pedido = new Pedido();
 
         LocalDateTime dataHoraAtual = LocalDateTime.now();
@@ -179,13 +179,11 @@ public class PedidoServiceImpl implements PedidoService {
             System.out.println("Não há produtos a serem entregues.");
             return false;
         } else {
-            System.out.println("Pedidos para serem entregues:");
-            int contador = 1;
+            System.out.println("Pedidos a serem entregues:");
 
             for (Pedido pedido : pedidos) {
-                System.out.println(contador + ". " + pedido.getStatus() +
+                System.out.println(pedido.getStatus() +
                         " - Número do pedido:" + pedido.getId() + "  Valor do pedido:" + pedido.getValorPedido());
-                contador++;
             }
             return true;
         }
