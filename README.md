@@ -18,4 +18,4 @@
   - A data de criação do pedido deve ser definida.
 
 Cadastrar Cliente:
-![image](https://freeimage.host/i/JuC5t4V)
+![image](https://postimg.cc/xcsv06Ft)
